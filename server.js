@@ -18,7 +18,13 @@ server.route({
 async function start() {
   try {
     await server.start();
-  } catch (err) {
-
   }
+  catch (err) {
+    console.log(err);
+    process.exit(1);
+  }
+
+  console.log('Server running at:', server.info.uri);
 }
+
+start();
