@@ -1,5 +1,3 @@
-"use strict"
-
 const Hapi = require("hapi")
 const { db, User } = require("./db/models/user")
 
@@ -19,44 +17,44 @@ server.route({
 server.route({
   method: "GET",
   path: "/hello/{username}",
-  handler: (request, h) => {
-    return User.findOne({ where: { name: request.params.username } })
-      .then(foundUser => {
-        const data = JSON.stringify(foundUser)
-        console.log(data)
-        return data
-      })
-      .catch()
+  handler: async (request, h) => {
+    const foundUser = await User.findOne({
+      where: { name: request.params.username },
+    })
+
+    console.log("foundUser")
+
+    const response = h.entity({ etag: foundUser.updatedAt.toISOString() })
+    if (response) {
+      console.log("Etag valid")
+      return response
+    }
+
+    console.log("Etag invalid or undefined")
+
+    return foundUser
   },
 })
 
 server.route({
   method: "POST",
-  path: "/payloadOK",
-  config: {
-    handler: function(request, reply) {
-      console.log("payload number OK", request.payload.number)
-      console.log("request method ->", request.method)
-      reply("End")
-    },
+  path: "/payload-test",
+  handler: request => {
+    console.log("payload number OK", request.payload.number)
+    console.log("request method ->", request.method)
+    return request.payload.number
   },
 })
 
 server.route({
   method: "POST",
   path: "/add",
-  config: {
-    handler: (request, h) => {
-      return User.create({
-        name: request.payload.name,
-        password: request.payload.password,
-      })
-        .then(newUser => {
-          console.log(JSON.stringify(newUser))
-          return JSON.stringify(newUser)
-        })
-        .catch()
-    },
+  handler: async request => {
+    const newUser = await User.create({
+      name: request.payload.name,
+      password: request.payload.password,
+    })
+    return JSON.stringify(newUser)
   },
 })
 
@@ -67,9 +65,9 @@ async function start() {
   } catch (err) {
     console.log(err)
     process.exit(1)
+  } finally {
+    console.log("Server running at:", server.info.uri)
   }
-
-  console.log("Server running at:", server.info.uri)
 }
 
 start()
