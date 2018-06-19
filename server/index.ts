@@ -65,11 +65,11 @@ server.route({
   path: "/add",
   handler: async request => {
     if (isRequestPayloadUser(request.payload)) {
-      const now = new Date()
+      const createDate = new Date()
       return User.create({
         ...request.payload,
-        createdAt: now,
-        updatedAt: now,
+        createdAt: createDate,
+        updatedAt: createDate,
       })
     } else {
       return "Bad Payload"
