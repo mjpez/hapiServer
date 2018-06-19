@@ -2,8 +2,10 @@
   "name": "hapi-server",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "build/index.js",
   "dependencies": {
+    "@types/hapi": "^17.0.12",
+    "@types/sequelize": "^4.27.22",
     "hapi": "^17.5.1",
     "hapi-plugin-pg": "^1.1.2",
     "joi": "^13.4.0",
@@ -16,7 +18,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server/index.js"
+    "start": "nodemon build/index.js"
   },
   "author": "",
   "license": "ISC"
